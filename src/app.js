@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const podname = process.env.podname;
 const redis = require("redis-promise");
-const gkeHostname = "aot-redis-master";
+const gkeHostname = "otp-redis-master";
 const redisHost = process.env.NODE_ENV === "test" ? "127.0.0.1" : gkeHostname;
 
 app.get('/oauthtokenprovider', function(req, res) {
