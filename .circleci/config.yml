@@ -82,10 +82,10 @@ workflows:
       - "stage":
           requires:
             - build_image
-      - "prod":
-          requires:
-            - stage
-          filters:
-            branches:
-              only:
-                - master
+      #- "prod":
+      #    requires:
+      #      - stage
+      #    filters:
+      #      branches:
+      #        only:
+      #          - master
