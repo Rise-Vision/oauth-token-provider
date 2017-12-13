@@ -1,8 +1,8 @@
 const express = require("express");
 const http = require("http");
 const pkg = require("../package.json");
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
+/* const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();*/
 const defaultPort = 80;
 const port = process.env.OTP_PORT || defaultPort;
 const app = express();
