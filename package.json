@@ -31,12 +31,15 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^4.0.1",
-    "simple-mock": "^0.8.0"
+    "simple-mock": "^0.8.0",
+    "superagent": "^3.8.2"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "oauthio": "^0.3.5",
     "redis": "^2.8.0",
     "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.0"
   }
