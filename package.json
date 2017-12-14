@@ -1,0 +1,43 @@
+{
+  "name": "oauth-token-provider",
+  "version": "1.0.0",
+  "description": "Rise Vision OAuth Token Provider",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/**",
+    "test-unit": "eslint . && mocha -t 20000 -r test/mocha-env.js test/unit/**",
+    "test-integration": "eslint . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/integration/**",
+    "dev": "OTP_PORT=8080 NODE_ENV=test node index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rise-Vision/oauth-token-provider.git"
+  },
+  "author": "Rise Vision",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Rise-Vision/oauth-token-provider/issues"
+  },
+  "homepage": "https://github.com/Rise-Vision/oauth-token-provider#readme",
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^4.0.1",
+    "simple-mock": "^0.8.0"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^1.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "redis": "^2.8.0",
+    "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.0"
+  }
+}
