@@ -1,11 +1,11 @@
 const express = require("express");
 const http = require("http");
 const pkg = require("../package.json");
+const config = require("./config");
 /* const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();*/
-const defaultPort = 80;
-const port = process.env.OTP_PORT || defaultPort;
-const sessionSecret = process.env.OTP_SESSION_SECRET || "RV OTP";
+const port = process.env.OTP_PORT || config.defaultPort;
+const sessionSecret = process.env.OTP_SESSION_SECRET || config.defaultSessionSEcret;
 const session = require('express-session');
 const app = express();
 const server = http.createServer(app);
