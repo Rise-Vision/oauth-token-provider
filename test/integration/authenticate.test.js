@@ -23,7 +23,6 @@ describe("Authenticate", ()=>{
           assert(false);
         } else {
           assert.equal(res.status, SUCCESS_CODE);
-          console.log(res.body);
           assert(res.body.token);
         }
         done();
