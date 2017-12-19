@@ -46,6 +46,8 @@ app.get('/oauthtokenprovider/authenticate', provider.handleAuthenticateGetReques
 
 app.post('/oauthtokenprovider/authenticate', jsonParser, provider.handleAuthenticatePostRequest);
 
+app.post('/oauthtokenprovider/revoke', jsonParser, provider.handleRevokeRequest);
+
 const start = ()=>{
   server.listen(port, (err) => {
     if (err) {

@@ -20,9 +20,17 @@ describe("Provider", ()=>{
     refreshToken: "dashdsa"
   }
   const pk = 10;
+  const key = "xxxx:xxxx:1";
+
+  const auth = {
+    key
+  }
 
   beforeEach(()=>{
     req = {
+      body: {
+        key
+      }
     };
 
     resPromise = new Promise(resolve=>{
@@ -38,8 +46,10 @@ describe("Provider", ()=>{
     simple.mock(OAuth, "auth").resolveWith(authResult);
     simple.mock(authResult, "getCredentials").returnWith(credentials);
     simple.mock(redis, "increment").resolveWith(pk);
-    simple.mock(redis, "setAdd").resolveWith();
-    simple.mock(gcs, "saveToGCS").resolveWith();
+    simple.mock(redis, "setString").resolveWith();
+    simple.mock(gcs, "saveToGCS").resolveWith(auth);
+    simple.mock(gcs, "deleteFromGCS").resolveWith(req);
+    simple.mock(redis, "deleteKey").resolveWith();
   }
 
   afterEach(()=>{
@@ -66,11 +76,19 @@ describe("Provider", ()=>{
     provider.handleAuthenticatePostRequest(req, res);
 
     return resPromise.then(body=>{
-      assert.deepEqual(body, {authenticated: true});
+      assert.deepEqual(body, {key, authenticated: true});
     });
   });
 
-  describe("Second authenticate failures", ()=>{
+  it("should revoke the authentication", ()=>{
+    provider.handleRevokeRequest(req, res);
+
+    return resPromise.then(body=>{
+      assert.deepEqual(body, {key, revoked: true});
+    });
+  });
+
+  describe(" Test Failures", ()=>{
 
     beforeEach(()=>{
       resPromise = new Promise(resolve=>{
@@ -153,7 +171,7 @@ describe("Provider", ()=>{
 
     it("return failure for second step of authentication when cannot save to DB because of redis add", ()=>{
 
-      simple.mock(redis, "setAdd").throwWith(new Error());
+      simple.mock(redis, "setString").throwWith(new Error());
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
@@ -170,5 +188,33 @@ describe("Provider", ()=>{
       });
     });
 
+    describe(" Test Failures", ()=>{
+
+      beforeEach(()=>{
+        req = {
+          body: {
+            key
+          }
+        }
+      });
+
+      it("return failure for revoke when cannot delete from GCS", ()=>{
+        simple.mock(gcs, "deleteFromGCS").rejectWith(new Error("Could not delete from GCS: {}"));
+        provider.handleRevokeRequest(req, res);
+
+        return resPromise.then(body=>{
+          assert.equal(body, "Could not delete from GCS: {}");
+        });
+      });
+
+      it("return failure for revoke when cannot delete from DB", ()=>{
+        simple.mock(redis, "deleteKey").rejectWith(new Error("Could not delete from DB: {}"));
+        provider.handleRevokeRequest(req, res);
+
+        return resPromise.then(body=>{
+          assert.equal(body, "Could not delete from DB: {}");
+        });
+      });
+    });
   });
 });
