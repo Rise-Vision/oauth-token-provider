@@ -5,11 +5,15 @@ const storage = require("@google-cloud/storage")({
 
 const bucket = storage.bucket(config.bucket);
 
+const getFileName = (companyId, provider) => {
+  return `${companyId}/credentials/${provider}.txt`;
+}
+
 const saveToGCS = (auth) => {
   return new Promise((resolve, reject) => {
-    const gcsname = `${auth.body.companyId}/credentials/${auth.body.provider}.txt`;
+    const fileName = getFileName(auth.body.companyId, auth.body.provider);
 
-    const file = bucket.file(gcsname);
+    const file = bucket.file(fileName);
 
     const stream = file.createWriteStream({
       metadata: {
@@ -23,13 +27,27 @@ const saveToGCS = (auth) => {
     });
 
     stream.on('finish', () => {
-      resolve(auth.body);
+      resolve(auth);
     });
 
     stream.end(JSON.stringify(auth.credentials));
   });
 }
 
+const deleteFromGCS = (req) => {
+  // key contain company id, provider and a pk
+  const keyInParts = req.body.key.split(":");
+  const fileName = getFileName(keyInParts[0], keyInParts[1]);
+  const file = bucket.file(fileName);
+
+  return file.delete().then(() => {
+    return Promise.resolve(req);
+  }).catch(error =>{
+    return Promise.reject(new Error(`Could not delete from GCS: ${JSON.stringify(error)}`));
+  });
+}
+
 module.exports = {
-  saveToGCS
+  saveToGCS,
+  deleteFromGCS
 }
