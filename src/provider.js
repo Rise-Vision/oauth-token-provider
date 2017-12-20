@@ -4,13 +4,14 @@ const oauthioAppSecret = process.env.OTP_OAUTHIO_APP_SECRET;
 const redis = require("redis-promise");
 const {CLIENT_ERROR, SERVER_ERROR} = require("./status-codes.js");
 const gcs = require("./gcs.js");
+const invalidImputError = new Error("Invalid input");
 
 OAuth.initialize(oauthioAppKey, oauthioAppSecret);
 
 const validateAuthenticateBody = (req) => {
   const body = req.body;
   if (!body || !body.code || !body.provider || !body.companyId) {
-    return Promise.reject(new Error("Invalid input"));
+    return Promise.reject(invalidImputError);
   }
 
   return Promise.resolve(req);
@@ -76,7 +77,7 @@ const handleAuthenticateGetRequest = (req, res) => {
 const validateRevokeBody = (req) => {
   const body = req.body;
   if (!body || !body.key) {
-    return Promise.reject(new Error("Invalid input"));
+    return Promise.reject(invalidImputError);
   }
 
   return Promise.resolve(req);
@@ -95,7 +96,7 @@ const handleRevokeRequest = (req, res) => {
 const validateStatusBody = (req) => {
   const body = req.body;
   if (!body || !body.companyId || !body.provider) {
-    return Promise.reject(new Error("Invalid input"));
+    return Promise.reject(invalidImputError);
   }
 
   return Promise.resolve(req);
@@ -112,7 +113,7 @@ const handleStatusRequest = (req, res) => {
 
 const handleError = (res, error, errorMessage) => {
   console.log(errorMessage, error);
-  res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
+  res.status(error === invalidImputError ? CLIENT_ERROR : SERVER_ERROR);
   res.send(error.message);
 }
 
