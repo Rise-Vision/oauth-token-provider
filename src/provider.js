@@ -36,7 +36,8 @@ const saveToDB = (auth) => {
   return redis.increment(pkKey)
   .then(pkValue=>{
     const key = `${auth.body.companyId}:${auth.body.provider}:${pkValue}`;
-    redis.setString(key, [JSON.stringify(auth.credentials)]);
+    // add the pk to the company:provider index
+    redis.setString(key, [JSON.stringify(auth.credentials)]).then(redis.setAdd(`${auth.body.companyId}:${auth.body.provider}`, [pkValue]));
     auth.key = key;
     return Promise.resolve(auth);
   }).catch(error=>{
@@ -45,7 +46,14 @@ const saveToDB = (auth) => {
 }
 
 const deleteFromDB = (req) => {
-  return redis.deleteKey(req.body.key);
+  const keyInParts = req.body.key.split(":");
+  // delete entry and remove to the companyId:provider index
+  // eslint-disable-next-line no-magic-numbers
+  return redis.deleteKey(req.body.key).then(redis.setRemove(`${keyInParts[0]}:${keyInParts[1]}`, [keyInParts[2]]));
+}
+
+const checkStatus = (req) => {
+  return redis.getSet(`${req.body.companyId}:${req.body.provider}`);
 }
 
 const handleAuthenticatePostRequest = (req, res) => {
@@ -88,8 +96,29 @@ const handleRevokeRequest = (req, res) => {
   });
 }
 
+const validateStatusBody = (req) => {
+  const body = req.body;
+  if (!body || !body.companyId || !body.provider) {
+    return Promise.reject(new Error("Invalid input"));
+  }
+
+  return Promise.resolve(req);
+}
+
+const handleStatusRequest = (req, res) => {
+  validateStatusBody(req)
+  .then(checkStatus)
+  .then((exists)=>{res.json({authenticated: exists})})
+  .catch(error=>{
+    console.log("Error when getting status", error);
+    res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
+    res.send(error.message);
+  });
+}
+
 module.exports = {
   handleAuthenticateGetRequest,
   handleAuthenticatePostRequest,
-  handleRevokeRequest
+  handleRevokeRequest,
+  handleStatusRequest
 }
