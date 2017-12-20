@@ -2,12 +2,12 @@ const authenticator = require("./authenticator.js");
 const db = require("./db.js")
 const gcs = require("./gcs.js");
 const {CLIENT_ERROR, SERVER_ERROR} = require("./status-codes.js");
-const invalidImputError = new Error("Invalid input");
+const invalidInputError = new Error("Invalid input");
 
 const validateAuthenticateBody = (req) => {
   const body = req.body;
   if (!body || !body.code || !body.provider || !body.companyId) {
-    return Promise.reject(invalidImputError);
+    return Promise.reject(invalidInputError);
   }
 
   return Promise.resolve(req);
@@ -16,7 +16,7 @@ const validateAuthenticateBody = (req) => {
 const validateStatusBody = (req) => {
   const body = req.body;
   if (!body || !body.companyId || !body.provider) {
-    return Promise.reject(invalidImputError);
+    return Promise.reject(invalidInputError);
   }
 
   return Promise.resolve(req);
@@ -25,7 +25,7 @@ const validateStatusBody = (req) => {
 const validateRevokeBody = (req) => {
   const body = req.body;
   if (!body || !body.key) {
-    return Promise.reject(invalidImputError);
+    return Promise.reject(invalidInputError);
   }
 
   return Promise.resolve(req);
@@ -33,7 +33,7 @@ const validateRevokeBody = (req) => {
 
 const handleError = (res, error, errorMessage) => {
   console.log(errorMessage, error);
-  res.status(error === invalidImputError ? CLIENT_ERROR : SERVER_ERROR);
+  res.status(error === invalidInputError ? CLIENT_ERROR : SERVER_ERROR);
   res.send(error.message);
 }
 
