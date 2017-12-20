@@ -64,9 +64,7 @@ const handleAuthenticatePostRequest = (req, res) => {
   .then(gcs.saveToGCS)
   .then((auth)=>{res.json({key: auth.key, authenticated: true})})
   .catch(error=>{
-    console.log("Error when authenticating", error);
-    res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
-    res.send(error.message);
+    handleError(res, error, "Error when authenticating");
   });
 }
 
@@ -90,9 +88,7 @@ const handleRevokeRequest = (req, res) => {
   .then(deleteFromDB)
   .then(()=>{res.json({key: req.body.key, revoked: true})})
   .catch(error=>{
-    console.log("Error when revoking", error);
-    res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
-    res.send(error.message);
+    handleError(res, error, "Error when revoking");
   });
 }
 
@@ -110,10 +106,14 @@ const handleStatusRequest = (req, res) => {
   .then(checkStatus)
   .then((exists)=>{res.json({authenticated: exists})})
   .catch(error=>{
-    console.log("Error when getting status", error);
-    res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
-    res.send(error.message);
+    handleError(res, error, "Error when getting status");
   });
+}
+
+const handleError = (res, error, errorMessage) => {
+  console.log(errorMessage, error);
+  res.status(error.message === "Invalid input" ? CLIENT_ERROR : SERVER_ERROR);
+  res.send(error.message);
 }
 
 module.exports = {
