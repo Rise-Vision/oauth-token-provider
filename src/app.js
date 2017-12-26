@@ -48,7 +48,7 @@ const sendUnauthorized = (res) =>{
 app.use(jwt({
   secret: Buffer.from(jwtSecret, 'base64'),
   credentialsRequired: true
-}).unless({path: ['/oauthtokenprovider']}));
+}).unless({path: ['/oauthtokenprovider/']}));
 
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
