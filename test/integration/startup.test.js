@@ -16,7 +16,7 @@ describe("Startup", ()=>{
 
   it("return success when reaching the server", (done)=>{
 
-    request.get("http://localhost:8080/oauthtokenprovider")
+    request.get("http://localhost:8080/oauthtokenprovider/")
       .end((err, res) => {
         if (err) {
           console.log(err);
