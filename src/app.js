@@ -1,3 +1,4 @@
+/* eslint max-params: 0 */
 const express = require("express");
 const http = require("http");
 const pkg = require("../package.json");
@@ -20,32 +21,37 @@ const google = require('googleapis');
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
 
-
 // Google OAuth2 token verification
 const checkAccessToken = (req, res, next) => {
-  const authorization = req.headers["authorization"];
+  const authorization = req.headers.authorization;
+  if (!authorization) {return sendUnauthorized(res);}
   const items = authorization.split(/[ ]+/);
-
-  if (items.length > 1 && items[0].trim() == "Bearer") {
-    const access_token = items[1];
-    oauth2.tokeninfo({ access_token }, (error, response)=>{
-      if(error) {
-        res.status(AUTH_ERROR).send({message: "Authorization Required"});
-        return;
+  if (items.length > 1 && items[0].trim() === "Bearer") {
+    const accessToken = items[1];
+    oauth2.tokeninfo({"access_token": accessToken}, (error)=>{
+      if (error) {
+        return sendUnauthorized(res);
       }
       next();
     });
+  } else {
+    return sendUnauthorized(res);
   }
+}
+
+const sendUnauthorized = (res) =>{
+  res.status(AUTH_ERROR).send({message: "Authorization Required"});
+
 }
 
 // JWT authorization
 app.use(jwt({
-  secret: new Buffer(jwtSecret, 'base64'),
+  secret: Buffer.from(jwtSecret, 'base64'),
   credentialsRequired: true
-}));
+}).unless({path: ['/oauthtokenprovider']}));
 
 app.use((err, req, res, next) => {
-  if(err.name === 'UnauthorizedError') {
+  if (err.name === 'UnauthorizedError') {
     checkAccessToken(req, res, next);
     return;
   }
