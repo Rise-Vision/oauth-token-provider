@@ -10,7 +10,7 @@ const authenticate = (req) => {
     code: req.body.code
   }).then(oauthResult=>{
     return Promise.resolve({oauthResult, body: req.body});
-  }).catch(error=>{
+  }).fail(error=>{
     return Promise.reject(new Error(`Could not authenticate with OAuth.io: ${JSON.stringify(error)}`));
   });
 }

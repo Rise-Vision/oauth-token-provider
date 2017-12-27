@@ -45,7 +45,7 @@
     "express-jwt": "^5.3.0",
     "express-session": "^1.15.6",
     "googleapis": "^23.0.0",
-    "oauthio": "^0.3.5",
+    "oauthio": "git+https://github.com/Rise-Vision/sdk-node.git",
     "redis": "^2.8.0",
     "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.1"
   }
