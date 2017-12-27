@@ -86,7 +86,7 @@ workflows:
   workflow1:
     jobs:
       - "test"
-      - "e2e"
+      - "e2e":
           requires:
            - test
       - "build_image":
