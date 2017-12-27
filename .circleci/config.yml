@@ -23,6 +23,8 @@ jobs:
       - restore_cache:
           key: node-cache-{{ checksum "package.json" }}
       - run: npm install
+      - run: "echo ${CLIENT_SECRET}"
+      - run: "echo ${REFRESH_TOKEN}"
       - run: ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&${CLIENT_SECRET}&${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];");
       - run: npm run test-e2e
 
