@@ -1,8 +1,9 @@
 const timeout = 5000;
+const accessToken = process.env.ACCESS_TOKEN;
 module.exports = {
   'Twitter OAuth Token Provider Test' (browser) {
     browser
-      .url("http://localhost:3000/twitter-authentication.html")
+      .url(`http://localhost:3000/twitter-authentication.html?access_token=${accessToken}`)
       .waitForElementVisible('#output', timeout)
       .waitForElementVisible('#token', timeout)
       .window_handles(function(result) {
