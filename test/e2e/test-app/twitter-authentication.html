@@ -15,7 +15,7 @@
     let key ="";
     const output = document.getElementById("output");
     OAuth.initialize('EJMI-lB9hB55OYEsYmjXDNfRGoY');
-    $.ajaxSetup({headers: {"authorization": decodeURIComponent(params["access_token"])}});
+    $.ajaxSetup({headers: {"authorization": `Bearer ${decodeURIComponent(params["access_token"])}`}});
 
     $.ajax({
         url: 'http://localhost:8080/oauthtokenprovider/authenticate',
