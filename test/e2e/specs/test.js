@@ -1,14 +1,15 @@
+const timeout = 5000;
 module.exports = {
-  'Twitter OAuth Token Provider Test': function (browser) {
+  'Twitter OAuth Token Provider Test' (browser) {
     browser
       .url("http://localhost:3000/twitter-authentication.html")
-      .waitForElementVisible('#output', 5000)
-      .waitForElementVisible('#token', 5000)
+      .waitForElementVisible('#output', timeout)
+      .waitForElementVisible('#token', timeout)
       .window_handles(function(result) {
           const newWindow = result.value[1];
           this.switchWindow(newWindow);
       })
-      .waitForElementVisible('#oauth_form', 5000)
+      .waitForElementVisible('#oauth_form', timeout)
       .setValue('input#username_or_email', process.env.USER)
       .setValue('input#password', process.env.PASSWORD)
       .click('input#allow')
@@ -16,11 +17,11 @@ module.exports = {
           const newWindow = result.value[0];
           this.switchWindow(newWindow);
       })
-      .waitForElementVisible('#oauthio_result', 5000)
-      .waitForElementVisible('#key', 5000)
-      .waitForElementVisible('#autentication_result', 5000)
-      .waitForElementVisible('#revoke', 5000)
-      .waitForElementVisible('#status', 5000)
+      .waitForElementVisible('#oauthio_result', timeout)
+      .waitForElementVisible('#key', timeout)
+      .waitForElementVisible('#autentication_result', timeout)
+      .waitForElementVisible('#revoke', timeout)
+      .waitForElementVisible('#status', timeout)
       .assert.containsText('p#status', 'Status result: {"authenticated":[')
       .end()
   }

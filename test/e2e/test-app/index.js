@@ -1,7 +1,8 @@
-var express = require('express');
-var http = require('http');
-var app = express();
+const express = require('express');
+const http = require('http');
+const app = express();
+const port = 3000;
 
-app.use(express.static(__dirname + ''));
+app.use(express.static(`${__dirname}`));
 
-http.createServer(app).listen(3000);
+http.createServer(app).listen(port);
