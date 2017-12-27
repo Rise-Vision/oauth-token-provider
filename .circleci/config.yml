@@ -17,7 +17,7 @@ jobs:
       - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json npm test
 
   "e2e":
-    docker: *DOCKERIMAGE
+    docker: circleci/openjdk:8-jdk-node-browsers
     steps:
       - checkout
       - restore_cache:
