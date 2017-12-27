@@ -5,6 +5,7 @@ const oauthioAppSecret = process.env.OTP_OAUTHIO_APP_SECRET;
 OAuth.initialize(oauthioAppKey, oauthioAppSecret);
 
 const authenticate = (req) => {
+  console.log("req.session", req.session);
   return OAuth.auth(req.body.provider, req.session, {
     code: req.body.code
   }).then(oauthResult=>{
@@ -20,6 +21,7 @@ const handleAuthentication = (auth) => {
 }
 
 const getToken = (session) => {
+  console.log("session", session);
   return OAuth.generateStateToken(session);
 }
 
