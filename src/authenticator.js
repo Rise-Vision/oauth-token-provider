@@ -2,6 +2,8 @@ const OAuth = require('oauthio');
 const oauthioAppKey = process.env.OTP_OAUTHIO_APP_KEY;
 const oauthioAppSecret = process.env.OTP_OAUTHIO_APP_SECRET;
 
+console.log("oauthioAppKey: ", oauthioAppKey);
+console.log("oauthioAppSecret: ", oauthioAppSecret);
 OAuth.initialize(oauthioAppKey, oauthioAppSecret);
 
 const authenticate = (req) => {
