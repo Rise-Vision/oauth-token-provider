@@ -103,7 +103,8 @@ workflows:
           requires:
             - build_image
       - "e2e_stage":
-          requires: stage
+          requires: 
+            - stage
       #- "prod":
       #    requires:
       #      - stage
