@@ -45,7 +45,7 @@ const sendUnauthorized = (res) =>{
 }
 
 // JWT authorization
-app.use(jwt({
+/*app.use(jwt({
   secret: Buffer.from(jwtSecret, 'base64'),
   credentialsRequired: true
 }).unless({path: ['/oauthtokenprovider/']}));
@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
     return;
   }
  next();
-});
+});*/
 
 // CORS allow every origin as it requires user authorization
 app.use((req, res, next) => {
@@ -67,20 +67,11 @@ app.use((req, res, next) => {
     next();
 });
 
-const cookieSecurity = Reflect.has(process.env, "COOKIE_SECURITY") ? process.env.COOKIE_SECURITY === "true" : true;
-
 // Session
 app.use(session({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        sameSite: false,
-        path: '/',
-        httpOnly: false,
-        secure: cookieSecurity,
-        maxAge: config.cookieMaxAge
-    }
 }));
 
 
