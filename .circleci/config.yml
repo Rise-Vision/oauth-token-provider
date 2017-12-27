@@ -4,6 +4,7 @@ jobs:
   "test":
     docker: &DOCKERIMAGE
       - image: jenkinsrise/cci-v2-docker-gcloud:0.0.8
+    working_directory: ~/oauthtokenprovider
     steps:
       - checkout
       - restore_cache:
