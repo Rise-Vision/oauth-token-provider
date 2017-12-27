@@ -17,11 +17,10 @@ jobs:
       - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json npm test
 
   "e2e":
-    docker: *DOCKERIMAGE
+    docker:
+      - image: karthikiyengar/node-nightwatch
     steps:
       - checkout
-      - restore_cache:
-          key: node-cache-{{ checksum "package.json" }}
       - run: npm install
       - run: ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];");
       - run: npm run test-e2e
