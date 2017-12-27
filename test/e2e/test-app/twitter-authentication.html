@@ -16,9 +16,9 @@
     const output = document.getElementById("output");
     OAuth.initialize('EJMI-lB9hB55OYEsYmjXDNfRGoY');
     $.ajaxSetup({headers: {"authorization": `Bearer ${decodeURIComponent(params["access_token"])}`}});
-
+    const host = (params["env"] === "stage") ? "http://services-stage.risevision.com/" : "http://localhost:8080/"
     $.ajax({
-        url: 'http://localhost:8080/oauthtokenprovider/authenticate',
+        url: `${host}oauthtokenprovider/authenticate`,
         type: 'GET',
         xhrFields: { withCredentials: true },
         crossDomain: true,
@@ -32,7 +32,7 @@
         console.log("result", result);
         output.innerHTML += `<p id="oauthio_result">OAuth.io Result: ${JSON.stringify(result)}</p>`;
         $.ajax({
-            url: 'http://localhost:8080/oauthtokenprovider/authenticate',
+            url: `${host}oauthtokenprovider/authenticate`,
             type: 'POST',
             xhrFields: { withCredentials: true },
             crossDomain: true,
@@ -43,7 +43,7 @@
           console.log(key);
           output.innerHTML += `<p id="key">Key: ${data.key}</p>`;
           $.ajax({
-              url: 'http://localhost:8080/oauthtokenprovider/status',
+              url: `${host}oauthtokenprovider/status`,
               type: 'POST',
               xhrFields: { withCredentials: true },
               crossDomain: true,
@@ -53,7 +53,7 @@
             console.log(data);
             output.innerHTML += `<p id="autentication_result">Authentication result: ${JSON.stringify(data)}</p>`;
             $.ajax({
-                url: 'http://localhost:8080/oauthtokenprovider/revoke',
+                url: `${host}oauthtokenprovider/revoke`,
                 type: 'POST',
                 xhrFields: { withCredentials: true },
                 crossDomain: true,
@@ -63,7 +63,7 @@
               console.log(data);
               output.innerHTML += `<p id="revoke">Revoke result: ${JSON.stringify(data)}</p>`;
               $.ajax({
-                  url: 'http://localhost:8080/oauthtokenprovider/status',
+                  url: `${host}oauthtokenprovider/status`,
                   type: 'POST',
                   xhrFields: { withCredentials: true },
                   crossDomain: true,

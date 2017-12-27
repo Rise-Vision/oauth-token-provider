@@ -1,9 +1,10 @@
 const timeout = 5000;
 const accessToken = process.env.ACCESS_TOKEN;
+const e2eEnv = process.env.E2E_ENV
 module.exports = {
   'Twitter OAuth Token Provider Test' (browser) {
     browser
-      .url(`http://localhost:3000/twitter-authentication.html?access_token=${accessToken}`)
+      .url(`http://localhost:3000/twitter-authentication.html?access_token=${accessToken}&env=${e2eEnv}`)
       .waitForElementVisible('#output', timeout)
       .waitForElementVisible('#token', timeout)
       .window_handles(function(result) {
