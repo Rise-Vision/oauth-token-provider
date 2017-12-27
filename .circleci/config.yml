@@ -19,6 +19,7 @@ jobs:
   "e2e":
     docker:
       - image: circleci/openjdk:8-jdk-node-browsers
+    working_directory: ~/oauthtokenprovider
     steps:
       - checkout
       - restore_cache:
