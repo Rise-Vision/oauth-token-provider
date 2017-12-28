@@ -9,6 +9,7 @@ const port = process.env.OTP_PORT || config.defaultPort;
 const sessionSecret = process.env.OTP_SESSION_SECRET || config.defaultSessionSecret;
 const jwtSecret = process.env.JWT_SECRET || config.defaultJWTSecret;
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const jwt = require('express-jwt');
 const app = express();
 const server = http.createServer(app);
@@ -69,6 +70,7 @@ app.use((req, res, next) => {
 
 // Session
 app.use(session({
+    store: new RedisStore({host: redisHost}),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true
