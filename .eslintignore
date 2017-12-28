@@ -1,0 +1,3 @@
+test/e2e/test-app/oauth.min.js
+test/e2e/nightwatch.conf.js
+test/e2e/runner.js

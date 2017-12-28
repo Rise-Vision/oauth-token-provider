@@ -3,7 +3,7 @@ version: 2
 jobs:
   "test":
     docker: &DOCKERIMAGE
-      - image: jenkinsrise/cci-v2-docker-gcloud:0.0.8
+      - image: jenkinsrise/cci-v2-docker-gcloud:0.0.9
     steps:
       - checkout
       - restore_cache:
@@ -15,6 +15,23 @@ jobs:
             - ./node_modules
       - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
       - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json npm test
+
+  "e2e":
+    docker: &E2EIMAGE
+      - image: jenkinsrise/cci-v2-docker-e2e:0.0.1
+    steps:
+      - checkout
+      - run: npm install
+      - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
+      - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];") npm run test-e2e
+
+  "e2e_stage":
+    docker: *E2EIMAGE
+    steps:
+      - checkout
+      - run: npm install
+      - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
+      - run: E2E_ENV=stage GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];") npm run test-e2e
 
   "build_image":
     docker: *DOCKERIMAGE
@@ -76,12 +93,18 @@ workflows:
   workflow1:
     jobs:
       - "test"
+      - "e2e":
+          requires:
+           - test
       - "build_image":
           requires:
-            - test
+            - e2e
       - "stage":
           requires:
             - build_image
+      - "e2e_stage":
+          requires: 
+            - stage
       #- "prod":
       #    requires:
       #      - stage

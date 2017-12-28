@@ -7,10 +7,11 @@
     "test": "test"
   },
   "scripts": {
-    "test": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/**",
-    "test-unit": "eslint . && mocha -t 20000 -r test/mocha-env.js test/unit/**",
-    "test-integration": "eslint . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/integration/**",
-    "dev": "COOKIE_SECURITY=false OTP_PORT=8080 NODE_ENV=test node index.js",
+    "test": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/unit/** test/integration/**",
+    "test-e2e": "OTP_PORT=8080 NODE_ENV=test node test/e2e/runner.js",
+    "test-unit": "eslint --fix . && mocha -t 20000 -r test/mocha-env.js test/unit/**",
+    "test-integration": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/integration/**",
+    "dev": "OTP_PORT=8080 NODE_ENV=test node index.js",
     "start": "node index.js"
   },
   "repository": {
@@ -24,6 +25,7 @@
   },
   "homepage": "https://github.com/Rise-Vision/oauth-token-provider#readme",
   "devDependencies": {
+    "chromedriver": "^2.34.0",
     "eslint": "^4.13.1",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
@@ -31,18 +33,21 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^4.0.1",
+    "nightwatch": "^0.9.19",
+    "selenium-server": "^3.8.1",
     "simple-mock": "^0.8.0",
     "superagent": "^3.8.2"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.5.1",
     "body-parser": "^1.18.2",
+    "connect-redis": "^3.3.2",
     "express": "^4.16.2",
     "express-jwt": "^5.3.0",
     "express-session": "^1.15.6",
     "googleapis": "^23.0.0",
     "oauthio": "^0.3.5",
     "redis": "^2.8.0",
-    "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.1"
+    "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.2"
   }
 }

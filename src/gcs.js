@@ -22,7 +22,6 @@ const saveToGCS = (auth) => {
     });
 
     stream.on('error', (err) => {
-      console.log("Could not save to GCS", err);
       reject(new Error(`Could not save to GCS: ${JSON.stringify(err)}`));
     });
 

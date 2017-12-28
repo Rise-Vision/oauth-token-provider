@@ -9,6 +9,7 @@ const port = process.env.OTP_PORT || config.defaultPort;
 const sessionSecret = process.env.OTP_SESSION_SECRET || config.defaultSessionSecret;
 const jwtSecret = process.env.JWT_SECRET || config.defaultJWTSecret;
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const jwt = require('express-jwt');
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +21,8 @@ const provider = require("./provider");
 const google = require('googleapis');
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
+
+redis.initdb(null, redisHost);
 
 // Google OAuth2 token verification
 const checkAccessToken = (req, res, next) => {
@@ -60,27 +63,19 @@ app.use((err, req, res, next) => {
 
 // CORS allow every origin as it requires user authorization
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization');
     res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
 
-const cookieSecurity = Reflect.has(process.env, "COOKIE_SECURITY") ? process.env.COOKIE_SECURITY === "true" : true;
-
 // Session
 app.use(session({
+    store: new RedisStore({client: redis.getClient()}),
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
-    cookie: {
-        sameSite: false,
-        path: '/',
-        httpOnly: false,
-        secure: cookieSecurity,
-        maxAge: config.cookieMaxAge
-    }
+    saveUninitialized: true
 }));
 
 
@@ -102,12 +97,11 @@ app.post('/oauthtokenprovider/status', jsonParser, provider.handleStatusRequest)
 const start = ()=>{
   server.listen(port, (err) => {
     if (err) {
-      return console.log('something bad happened', err);
+      redis.close();
+      return console.log('Error when starting OAuth Token Provider', err);
     }
 
     console.log(`server is listening on ${port}`);
-
-    redis.initdb(null, redisHost);
   })
 }
 
