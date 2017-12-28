@@ -21,8 +21,8 @@ const saveToGCS = (auth) => {
       }
     });
 
-    stream.on('error', (err) => {
-      reject(new Error(`Could not save to GCS: ${JSON.stringify(err)}`));
+    stream.on('error', (error) => {
+      reject(new Error(`Could not save to GCS: {companyId: ${auth.body.companyId}, provider: ${auth.body.provider}, error: ${JSON.stringify(error)}}`));
     });
 
     stream.on('finish', () => {
@@ -42,7 +42,7 @@ const deleteFromGCS = (req) => {
   return file.delete().then(() => {
     return Promise.resolve(req);
   }).catch(error =>{
-    return Promise.reject(new Error(`Could not delete from GCS: ${JSON.stringify(error)}`));
+    return Promise.reject(new Error(`Could not delete from GCS: {companyId: ${keyInParts[0]}, provider: ${keyInParts[1]}, error: ${JSON.stringify(error)}}`));
   });
 }
 

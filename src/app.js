@@ -8,9 +8,9 @@ const jsonParser = bodyParser.json();
 const port = process.env.OTP_PORT || config.defaultPort;
 const sessionSecret = process.env.OTP_SESSION_SECRET || config.defaultSessionSecret;
 const jwtSecret = process.env.JWT_SECRET || config.defaultJWTSecret;
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-const jwt = require('express-jwt');
+const session = require("express-session");
+const RedisStore = require("connect-redis")(session);
+const jwt = require("express-jwt");
 const app = express();
 const server = http.createServer(app);
 const podname = process.env.podname;
@@ -18,7 +18,7 @@ const redis = require("redis-promise");
 const gkeHostname = "otp-redis-master";
 const redisHost = process.env.NODE_ENV === "test" ? "127.0.0.1" : gkeHostname;
 const provider = require("./provider");
-const google = require('googleapis');
+const google = require("googleapis");
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
 
@@ -43,18 +43,18 @@ const checkAccessToken = (req, res, next) => {
 }
 
 const sendUnauthorized = (res) =>{
+  console.log("Authorization Required");
   res.status(AUTH_ERROR).send({message: "Authorization Required"});
-
 }
 
 // JWT authorization
 app.use(jwt({
-  secret: Buffer.from(jwtSecret, 'base64'),
+  secret: Buffer.from(jwtSecret, "base64"),
   credentialsRequired: true
-}).unless({path: ['/oauthtokenprovider/']}));
+}).unless({path: ["/oauthtokenprovider/"]}));
 
 app.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
+  if (err.name === "UnauthorizedError") {
     checkAccessToken(req, res, next);
     return;
   }
@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
 // CORS allow every origin as it requires user authorization
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", req.headers.origin);
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization');
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
     res.header("Access-Control-Allow-Credentials", "true");
     next();
@@ -80,17 +80,17 @@ app.use(session({
 
 
 // Routers
-app.get('/oauthtokenprovider', function(req, res) {
+app.get("/oauthtokenprovider", function(req, res) {
   res.send(`OAuth Token Provider: ${podname} ${pkg.version}`);
 });
 
-app.get('/oauthtokenprovider/authenticate', provider.handleAuthenticateGetRequest);
+app.get("/oauthtokenprovider/authenticate", provider.handleAuthenticateGetRequest);
 
-app.post('/oauthtokenprovider/authenticate', jsonParser, provider.handleAuthenticatePostRequest);
+app.post("/oauthtokenprovider/authenticate", jsonParser, provider.handleAuthenticatePostRequest);
 
-app.post('/oauthtokenprovider/revoke', jsonParser, provider.handleRevokeRequest);
+app.post("/oauthtokenprovider/revoke", jsonParser, provider.handleRevokeRequest);
 
-app.post('/oauthtokenprovider/status', jsonParser, provider.handleStatusRequest);
+app.post("/oauthtokenprovider/status", jsonParser, provider.handleStatusRequest);
 
 
 // Server start and stop
@@ -98,7 +98,7 @@ const start = ()=>{
   server.listen(port, (err) => {
     if (err) {
       redis.close();
-      return console.log('Error when starting OAuth Token Provider', err);
+      return console.log("Error when starting OAuth Token Provider", err);
     }
 
     console.log(`server is listening on ${port}`);
