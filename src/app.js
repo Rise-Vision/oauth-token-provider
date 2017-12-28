@@ -22,6 +22,8 @@ const google = require('googleapis');
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
 
+redis.initdb(null, redisHost);
+
 // Google OAuth2 token verification
 const checkAccessToken = (req, res, next) => {
   const authorization = req.headers.authorization;
@@ -70,7 +72,7 @@ app.use((req, res, next) => {
 
 // Session
 app.use(session({
-    store: new RedisStore({host: redisHost}),
+    store: new RedisStore({client: redis.getClient()}),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true
@@ -95,12 +97,11 @@ app.post('/oauthtokenprovider/status', jsonParser, provider.handleStatusRequest)
 const start = ()=>{
   server.listen(port, (err) => {
     if (err) {
+      redis.close();
       return console.log('something bad happened', err);
     }
 
     console.log(`server is listening on ${port}`);
-
-    redis.initdb(null, redisHost);
   })
 }
 

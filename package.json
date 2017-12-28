@@ -48,6 +48,6 @@
     "googleapis": "^23.0.0",
     "oauthio": "^0.3.5",
     "redis": "^2.8.0",
-    "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.1"
+    "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.2"
   }
 }
