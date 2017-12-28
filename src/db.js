@@ -10,7 +10,7 @@ const saveToDB = (auth) => {
     auth.key = key;
     return Promise.resolve(auth);
   }).catch(error=>{
-    return Promise.reject(new Error(`Could not save to DB: ${JSON.stringify(error)}`));
+    return Promise.reject(new Error(`Could not save to DB: {companyId: ${auth.body.companyId}, provider: ${auth.body.provider}, error: ${JSON.stringify(error)}}`));
   });
 }
 

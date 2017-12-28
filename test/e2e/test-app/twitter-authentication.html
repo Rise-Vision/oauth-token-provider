@@ -14,15 +14,15 @@
     let params={};location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,k,v){params[k]=v})
     let key ="";
     const output = document.getElementById("output");
-    OAuth.initialize('EJMI-lB9hB55OYEsYmjXDNfRGoY');
+    OAuth.initialize("EJMI-lB9hB55OYEsYmjXDNfRGoY");
     $.ajaxSetup({headers: {"authorization": `Bearer ${decodeURIComponent(params["access_token"])}`}});
     const host = (params["env"] === "stage") ? "http://services-stage.risevision.com/" : "http://localhost:8080/"
     $.ajax({
         url: `${host}oauthtokenprovider/authenticate`,
-        type: 'GET',
+        type: "GET",
         xhrFields: { withCredentials: true },
         crossDomain: true,
-        contentType: 'application/json'}
+        contentType: "application/json"}
     ).done(function(data) {
       console.log(data.token);
       output.innerHTML += `<p id="token">Token: ${data.token}</p>`;
@@ -33,42 +33,42 @@
         output.innerHTML += `<p id="oauthio_result">OAuth.io Result: ${JSON.stringify(result)}</p>`;
         $.ajax({
             url: `${host}oauthtokenprovider/authenticate`,
-            type: 'POST',
+            type: "POST",
             xhrFields: { withCredentials: true },
             crossDomain: true,
-            contentType: 'application/json',
-            data: JSON.stringify({code: result.code, companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+            contentType: "application/json",
+            data: JSON.stringify({code: result.code, companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
         ).done(function(data) {
           key = data.key;
           console.log(key);
           output.innerHTML += `<p id="key">Key: ${data.key}</p>`;
           $.ajax({
               url: `${host}oauthtokenprovider/status`,
-              type: 'POST',
+              type: "POST",
               xhrFields: { withCredentials: true },
               crossDomain: true,
-              contentType: 'application/json',
-              data: JSON.stringify({companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+              contentType: "application/json",
+              data: JSON.stringify({companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
           ).done(function(data) {
             console.log(data);
             output.innerHTML += `<p id="autentication_result">Authentication result: ${JSON.stringify(data)}</p>`;
             $.ajax({
                 url: `${host}oauthtokenprovider/revoke`,
-                type: 'POST',
+                type: "POST",
                 xhrFields: { withCredentials: true },
                 crossDomain: true,
-                contentType: 'application/json',
+                contentType: "application/json",
                 data: JSON.stringify({key: key})}
             ).done(function(data) {
               console.log(data);
               output.innerHTML += `<p id="revoke">Revoke result: ${JSON.stringify(data)}</p>`;
               $.ajax({
                   url: `${host}oauthtokenprovider/status`,
-                  type: 'POST',
+                  type: "POST",
                   xhrFields: { withCredentials: true },
                   crossDomain: true,
-                  contentType: 'application/json',
-                  data: JSON.stringify({companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+                  contentType: "application/json",
+                  data: JSON.stringify({companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
               ).done(function(data) {
                 console.log(data);
                 output.innerHTML += `<p id="status">Status result: ${JSON.stringify(data)}</p>`;
@@ -76,6 +76,8 @@
             })
           })
         })
+      }).fail(function(err) {
+        console.log(err);
       })
     });
   });

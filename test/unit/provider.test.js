@@ -4,7 +4,7 @@
 const assert = require("assert");
 const simple = require("simple-mock");
 const provider = require("../../src/provider");
-const OAuth = require('oauthio');
+const OAuth = require("oauthio");
 const redis = require("redis-promise");
 const gcs = require("../../src/gcs.js");
 
@@ -191,7 +191,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not authenticate with OAuth.io: {}");
+        assert.equal(body, "Could not authenticate with OAuth.io: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -201,7 +201,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -211,7 +211,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -221,7 +221,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 

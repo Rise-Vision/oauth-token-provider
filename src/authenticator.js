@@ -1,4 +1,4 @@
-const OAuth = require('oauthio');
+const OAuth = require("oauthio");
 const oauthioAppKey = process.env.OTP_OAUTHIO_APP_KEY;
 const oauthioAppSecret = process.env.OTP_OAUTHIO_APP_SECRET;
 
@@ -10,7 +10,7 @@ const authenticate = (req) => {
   }).then(oauthResult=>{
     return Promise.resolve({oauthResult, body: req.body});
   }).catch(error=>{
-    return Promise.reject(new Error(`Could not authenticate with OAuth.io: ${JSON.stringify(error)}`));
+    return Promise.reject(new Error(`Could not authenticate with OAuth.io: {companyId: ${req.body.companyId}, provider: ${req.body.provider}, error: ${JSON.stringify(error)}}`));
   });
 }
 
