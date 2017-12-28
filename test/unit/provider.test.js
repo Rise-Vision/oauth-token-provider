@@ -4,7 +4,7 @@
 const assert = require("assert");
 const simple = require("simple-mock");
 const provider = require("../../src/provider");
-const OAuth = require('oauthio');
+const OAuth = require("oauthio");
 const redis = require("redis-promise");
 const gcs = require("../../src/gcs.js");
 

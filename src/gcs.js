@@ -21,11 +21,11 @@ const saveToGCS = (auth) => {
       }
     });
 
-    stream.on('error', (error) => {
+    stream.on("error", (error) => {
       reject(new Error(`Could not save to GCS: {companyId: ${auth.body.companyId}, provider: ${auth.body.provider}, error: ${JSON.stringify(error)}}`));
     });
 
-    stream.on('finish', () => {
+    stream.on("finish", () => {
       resolve(auth);
     });
 
