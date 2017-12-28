@@ -7,7 +7,7 @@ app.use(express.static(`${__dirname}`));
 
 http.createServer(app).listen(port, (err) => {
   if (err) {
-    return console.log('something bad happened', err);
+    return console.log('Error when starting test app server', err);
   }
 
   console.log(`server is listening on ${port}`);

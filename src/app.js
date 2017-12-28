@@ -98,7 +98,7 @@ const start = ()=>{
   server.listen(port, (err) => {
     if (err) {
       redis.close();
-      return console.log('something bad happened', err);
+      return console.log('Error when starting OAuth Token Provider', err);
     }
 
     console.log(`server is listening on ${port}`);
