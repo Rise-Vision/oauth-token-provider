@@ -191,7 +191,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not authenticate with OAuth.io: {}");
+        assert.equal(body, "Could not authenticate with OAuth.io: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -201,7 +201,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -211,7 +211,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 
@@ -221,7 +221,7 @@ describe("Provider", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {}");
+        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
       });
     });
 

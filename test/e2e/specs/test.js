@@ -24,7 +24,7 @@ module.exports = {
       .waitForElementVisible("#autentication_result", timeout)
       .waitForElementVisible("#revoke", timeout)
       .waitForElementVisible("#status", timeout)
-      .assert.containsText("p#status", "Status result: {"authenticated":[")
+      .assert.containsText("p#status", "Status result: {\"authenticated\":[")
       .end()
   }
 }
