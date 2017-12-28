@@ -9,6 +9,7 @@ const port = process.env.OTP_PORT || config.defaultPort;
 const sessionSecret = process.env.OTP_SESSION_SECRET || config.defaultSessionSecret;
 const jwtSecret = process.env.JWT_SECRET || config.defaultJWTSecret;
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const jwt = require('express-jwt');
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +21,8 @@ const provider = require("./provider");
 const google = require('googleapis');
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
+
+redis.initdb(null, redisHost);
 
 // Google OAuth2 token verification
 const checkAccessToken = (req, res, next) => {
@@ -69,6 +72,7 @@ app.use((req, res, next) => {
 
 // Session
 app.use(session({
+    store: new RedisStore({client: redis.getClient()}),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: true
@@ -93,12 +97,11 @@ app.post('/oauthtokenprovider/status', jsonParser, provider.handleStatusRequest)
 const start = ()=>{
   server.listen(port, (err) => {
     if (err) {
+      redis.close();
       return console.log('something bad happened', err);
     }
 
     console.log(`server is listening on ${port}`);
-
-    redis.initdb(null, redisHost);
   })
 }
 
