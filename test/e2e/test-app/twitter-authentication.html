@@ -37,7 +37,7 @@
             xhrFields: { withCredentials: true },
             crossDomain: true,
             contentType: "application/json",
-            data: JSON.stringify({code: result.code, companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+            data: JSON.stringify({code: result.code, companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
         ).done(function(data) {
           key = data.key;
           console.log(key);
@@ -48,7 +48,7 @@
               xhrFields: { withCredentials: true },
               crossDomain: true,
               contentType: "application/json",
-              data: JSON.stringify({companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+              data: JSON.stringify({companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
           ).done(function(data) {
             console.log(data);
             output.innerHTML += `<p id="autentication_result">Authentication result: ${JSON.stringify(data)}</p>`;
@@ -68,7 +68,7 @@
                   xhrFields: { withCredentials: true },
                   crossDomain: true,
                   contentType: "application/json",
-                  data: JSON.stringify({companyId: "f114ad26-949d-44b4-87e9-8528afc76ce4", provider: "twitter"})}
+                  data: JSON.stringify({companyId: "b9143310-d459-4f64-b187-b2e8178d6b9d", provider: "twitter"})}
               ).done(function(data) {
                 console.log(data);
                 output.innerHTML += `<p id="status">Status result: ${JSON.stringify(data)}</p>`;
