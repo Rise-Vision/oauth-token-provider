@@ -6,7 +6,7 @@ const storage = require("@google-cloud/storage")({
 const bucket = storage.bucket(config.bucket);
 
 const getFileName = (companyId, provider) => {
-  return `${companyId}/credentials/${provider}.txt`;
+  return `${companyId}/credentials/${provider}.json`;
 }
 
 const saveToGCS = (auth) => {
