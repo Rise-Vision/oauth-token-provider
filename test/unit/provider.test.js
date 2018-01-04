@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 /* eslint max-statements: ["error", 10, { "ignoreTopLevelFunctions": true }] */
 /* eslint max-statements: 0 */
+/* eslint camelcase: ["error", {properties: "never"}]*/
 const assert = require("assert");
 const simple = require("simple-mock");
 const provider = require("../../src/provider");
@@ -17,8 +18,8 @@ describe("Provider", ()=>{
   };
 
   const credentials = {
-    accessToken: "dsadsa",
-    refreshToken: "dashdsa"
+    oauth_token: "dsadsa",
+    oauth_token_secret: "dashdsa"
   }
   const pk = 10;
   const key = "xxxx:xxxx:1";
