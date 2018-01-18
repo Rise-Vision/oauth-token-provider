@@ -22,7 +22,9 @@ At this time Chrome is the only browser that this project and Rise Vision suppor
 ### Local Development Environment Setup and Installation
 
 First you need to have NPM and NodeJS installed.
-You will also need to also have Redis server installing and running before running the OAuth Token Provider
+
+You will also need to also have Redis server installed and running before running the OAuth Token Provider.
+
 Then you can clone the project with the following command
 ```
 git clone https://github.com/Rise-Vision/oauth-token-provider.git
@@ -39,7 +41,7 @@ Then you can start the server with:
 npm run dev
 ```
 
-After that you can see it running under http://localhost:8080
+After that you can see it running under http://localhost:8080/oauthtokenprovider/
 
 ### Dependencies
 - Redis server
