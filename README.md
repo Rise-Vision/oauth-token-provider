@@ -23,7 +23,7 @@ At this time Chrome is the only browser that this project and Rise Vision suppor
 
 First you need to have NPM and NodeJS installed.
 
-You will also need to also have Redis server installed and running before running the OAuth Token Provider.
+You will also need to have Redis server installed and running before running the OAuth Token Provider.
 
 Then you can clone the project with the following command
 ```
