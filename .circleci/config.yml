@@ -103,12 +103,12 @@ workflows:
           requires:
             - build_image
       - "e2e_stage":
-          requires: 
+          requires:
             - stage
-      #- "prod":
-      #    requires:
-      #      - stage
-      #    filters:
-      #      branches:
-      #        only:
-      #          - master
+      - "prod":
+          requires:
+            - e2e_stage
+          filters:
+            branches:
+              only:
+                - master
