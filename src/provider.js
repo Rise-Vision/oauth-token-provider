@@ -33,9 +33,7 @@ const validateRevokeBody = (req) => {
 }
 
 const handleError = (res, error, errorMessage) => {
-  if (config.debugMode) {
-    console.log(errorMessage, error);
-  }
+  console.log(errorMessage, error);
   res.status(error === invalidInputError ? CLIENT_ERROR : SERVER_ERROR);
   res.send(error.message);
 }
