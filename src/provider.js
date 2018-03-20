@@ -3,7 +3,6 @@ const db = require("./db.js")
 const gcs = require("./gcs.js");
 const {CLIENT_ERROR, SERVER_ERROR} = require("./status-codes.js");
 const invalidInputError = new Error("Invalid input");
-const config = require("./config");
 
 const validateAuthenticateBody = (req) => {
   const body = req.body;
