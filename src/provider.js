@@ -3,6 +3,7 @@ const db = require("./db.js")
 const gcs = require("./gcs.js");
 const {CLIENT_ERROR, SERVER_ERROR} = require("./status-codes.js");
 const invalidInputError = new Error("Invalid input");
+const config = require("./config");
 
 const validateAuthenticateBody = (req) => {
   const body = req.body;
@@ -32,7 +33,9 @@ const validateRevokeBody = (req) => {
 }
 
 const handleError = (res, error, errorMessage) => {
-  console.log(errorMessage, error);
+  if (config.debugMode) {
+    console.log(errorMessage, error);
+  }
   res.status(error === invalidInputError ? CLIENT_ERROR : SERVER_ERROR);
   res.send(error.message);
 }

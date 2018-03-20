@@ -22,6 +22,8 @@ const google = require("googleapis");
 const oauth2 = google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
 
+process.on("SIGUSR2", config.debugToggle);
+
 redis.initdb(null, redisHost);
 
 // Google OAuth2 token verification
@@ -43,7 +45,6 @@ const checkAccessToken = (req, res, next) => {
 }
 
 const sendUnauthorized = (res) =>{
-  console.log("Authorization Required");
   res.status(AUTH_ERROR).send({message: "Authorization Required"});
 }
 
