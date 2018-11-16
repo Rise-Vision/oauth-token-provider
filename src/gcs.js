@@ -1,8 +1,16 @@
 const config = require("./config");
-const storage = require("@google-cloud/storage")({
-  projectId: config.projectId
-});
+const createStorage = require("@google-cloud/storage");
+const path = require("path");
 
+const storageOptions = {projectId: config.projectId};
+
+if( !process.env["GOOGLE_APPLICATION_CREDENTIALS"] ) {
+  const keyFilename = path.join( __dirname, "gcloud-service-key.json" );
+
+  storageOptions.keyFilename = keyFilename;
+}
+
+const storage = createStorage(storageOptions);
 const bucket = storage.bucket(config.bucket);
 
 const getFileName = (companyId, provider) => {
