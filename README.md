@@ -57,9 +57,56 @@ Integration tests can be run with:
 npm run test-integration
 ```
 
-E2E tests will require keys and passwords that are private
+E2E tests will require keys and passwords that are private:
 ```
-OTP_OAUTHIO_APP_KEY= OTP_OAUTHIO_APP_SECRET= USER= PASSWORD= ACCESS_TOKEN= npm run test-e2e
+GOOGLE_APPLICATION_CREDENTIALS=<path to file> ACCESS_TOKEN=<token> npm run test-e2e
+```
+
+To run against staging server:
+```
+E2E_ENV=stage GOOGLE_APPLICATION_CREDENTIALS=<path to file> ACCESS_TOKEN=<token> npm run test-e2e
+```
+
+### Manual Testing
+
+Change to the project directory and run the following commands:
+
+```
+redis-server
+node test/e2e/test-app/index.js
+npm run dev
+```
+
+Then open a browser and request the test page.
+
+For local testing:
+  http://localhost:3000/twitter-authentication.html?access_token=<TOKEN>
+
+And for testing against staging server:
+  http://localhost:3000/twitter-authentication.html?env=stage&access_token=<TOKEN>
+
+### Interacting directly with the services
+
+The same access token is also needed here.
+
+To request status of Twitter credentials for a company id on staging service:
+
+```
+curl -X POST  -H "Content-Type: application/json" -H "Authorization: Bearer TOKEN" -d '{ "companyId": "COMPANY_ID", "provider": "twitter" }' http://services-stage.risevision.com/oauthtokenprovider/status
+```
+
+To connect to the staging pods from a development machine with gcloud installed
+and with a Google account with permissions, run:
+
+```
+gcloud container clusters get-credentials messaging-service-stage --zone us-central1-a --project <PROJECT_ID_HERE>
+kubectl get pods
+```
+
+Look for current `oauth-token-provider` pod name in the list and then run:
+
+```
+kubectl exec -t -i <PODNAME> bash
 ```
 
 ## Submitting Issues
