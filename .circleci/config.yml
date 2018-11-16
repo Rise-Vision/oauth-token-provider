@@ -43,6 +43,9 @@ jobs:
           at: .
       - run: "echo Building version ${CIRCLE_SHA1}"
       - run: "echo ${ACCT_AUTH} | base64 -d > ${HOME}//gcloud-service-key.json"
+      - run:
+          name: save credentials file so it gets included in docker image 
+          command: echo ${ACCT_AUTH} | base64 -d > src/gcloud-service-key.json
       - run: gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
       - run: gcloud config set project $PROJECT_ID
       - setup_remote_docker
