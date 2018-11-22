@@ -94,7 +94,7 @@ app.post("/oauthtokenprovider/revoke", jsonParser, provider.handleRevokeRequest)
 app.post("/oauthtokenprovider/status", jsonParser, provider.handleStatusRequest);
 
 // May be invoked manually to restore file credentials if they were lost on GCS
-// but remain in the in-memory GCS structure
+// but remain in the in-memory Redis structure
 app.post("/oauthtokenprovider/restore_file_credentials", jsonParser, provider.handleRestoreFileCredentialsRequest);
 
 

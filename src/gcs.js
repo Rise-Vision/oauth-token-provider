@@ -4,8 +4,8 @@ const path = require("path");
 
 const storageOptions = {projectId: config.projectId};
 
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  const keyFilename = path.join(__dirname, "gcloud-service-key.json");
+if( !process.env["GOOGLE_APPLICATION_CREDENTIALS"] ) {
+  const keyFilename = path.join( __dirname, "gcloud-service-key.json" );
 
   storageOptions.keyFilename = keyFilename;
 }
