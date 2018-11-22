@@ -25,8 +25,14 @@ const checkKey = (req) => {
   return redis.getSet(`${req.body.companyId}:${req.body.provider}`);
 }
 
+const getCredentials = key => {
+  return redis.getString(key)
+  .then(stringCredentials => JSON.parse(stringCredentials));
+}
+
 module.exports = {
   saveToDB,
   deleteFromDB,
-  checkKey
+  checkKey,
+  getCredentials
 }

@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+/* eslint max-lines: 0 */
 /* eslint max-statements: ["error", 10, { "ignoreTopLevelFunctions": true }] */
 /* eslint max-statements: 0 */
 /* eslint camelcase: ["error", {properties: "never"}]*/
@@ -123,6 +124,54 @@ describe("Provider", ()=>{
     return resPromise.then(body=>{
       assert.deepEqual(body, {authenticated: []});
     });
+  });
+
+  describe("Restore file credentials", () => {
+
+    beforeEach(()=>{
+      simple.mock(redis, "getString").resolveWith('{"value": 1}');
+
+      req = {
+        body: {
+          companyId: "xxxxx",
+          provider: "yyyyy"
+        }
+      }
+    });
+
+    it("should restore file credentials", () => {
+      provider.handleRestoreFileCredentialsRequest(req, res);
+
+      return resPromise.then(body=>{
+        assert.deepEqual(body, {success: true});
+
+        assert.equal(redis.getString.callCount, 1);
+        assert.equal(redis.getString.lastCall.args[0], "xxxxx:yyyyy:10");
+
+        assert.equal(gcs.saveToGCS.callCount, 1);
+        assert.deepEqual(gcs.saveToGCS.lastCall.args[0], {
+          body: {companyId: "xxxxx", provider: "yyyyy"},
+          credentials: {value: 1}
+        });
+      });
+    });
+
+    it("should not restore file credentials if the company id has none", () => {
+      simple.mock(redis, "getSet").resolveWith([]);
+
+      provider.handleRestoreFileCredentialsRequest(req, res);
+
+      return resPromise.then(body=>{
+        assert.deepEqual(body, {
+          success: false,
+          message: "No credentials for: xxxxx:yyyyy"
+        });
+
+        assert.equal(redis.getString.callCount, 0);
+        assert.equal(gcs.saveToGCS.callCount, 0);
+      });
+    });
+
   });
 
   describe("Test Failures", ()=>{
@@ -281,6 +330,27 @@ describe("Provider", ()=>{
 
         return resPromise.then(body=>{
           assert.equal(body, "Could not delete from GCS: {}");
+        });
+      });
+    });
+
+    describe("Restore Credentials Failures", ()=>{
+
+      beforeEach(()=>{
+        req = {
+          body: {
+            companyId: "xxxxx",
+            provider: "yyyyy"
+          }
+        }
+      });
+
+      it("return failure when credentials should be stored but aren't found", ()=>{
+        simple.mock(redis, "getString").resolveWith(null);
+        provider.handleRestoreFileCredentialsRequest(req, res);
+
+        return resPromise.then(body=>{
+          assert.equal(body, "Could not read credentials for: xxxxx:yyyyy:10");
         });
       });
     });

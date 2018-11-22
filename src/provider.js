@@ -31,6 +31,21 @@ const validateRevokeBody = (req) => {
   return Promise.resolve(req);
 }
 
+const restoreFileCredentials = (companyId, provider, id) => {
+  const key = `${companyId}:${provider}:${id}`;
+
+  return db.getCredentials(key)
+  .then(credentials => {
+    if (!credentials) {
+      throw new Error(`Could not read credentials for: ${key}`);
+    }
+
+    const data = {body: {companyId, provider}, credentials};
+
+    return gcs.saveToGCS(data);
+  });
+}
+
 const handleError = (res, error, errorMessage) => {
   console.log(errorMessage, error);
   res.status(error === invalidInputError ? CLIENT_ERROR : SERVER_ERROR);
@@ -74,9 +89,32 @@ const handleStatusRequest = (req, res) => {
   });
 }
 
+const handleRestoreFileCredentialsRequest = (req, res) => {
+  validateStatusBody(req)
+  .then(db.checkKey)
+  .then(keys=>{
+    const companyId = req.body.companyId;
+    const provider = req.body.provider;
+
+    if (!keys || keys.length === 0) {
+      return res.json({
+        success: false,
+        message: `No credentials for: ${companyId}:${provider}`
+      });
+    }
+
+    return restoreFileCredentials(companyId, provider, keys[0]);
+  })
+  .then(() => res.json({success: true}))
+  .catch(error=>{
+    handleError(res, error, "Error when restoring file credentials");
+  });
+}
+
 module.exports = {
   handleAuthenticateGetRequest,
   handleAuthenticatePostRequest,
   handleRevokeRequest,
-  handleStatusRequest
+  handleStatusRequest,
+  handleRestoreFileCredentialsRequest
 }
