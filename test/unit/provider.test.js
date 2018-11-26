@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* eslint max-statements: ["error", 10, { "ignoreTopLevelFunctions": true }] */
-/* eslint max-statements: 0 */
 /* eslint camelcase: ["error", {properties: "never"}]*/
+
 const assert = require("assert");
 const simple = require("simple-mock");
 const provider = require("../../src/provider");
@@ -125,165 +125,51 @@ describe("Provider", ()=>{
     });
   });
 
-  describe("Test Failures", ()=>{
+  describe("Restore file credentials", () => {
 
     beforeEach(()=>{
-      resPromise = new Promise(resolve=>{
-        res = {send: resolve, status: () => {}};
-      });
-
-      req = {
-        body: {
-          code: "xxxxx",
-          companyId: "xxxxx",
-          provider: "twitter"
-        }
-      }
-    });
-
-    it("return failure when missing code", ()=>{
+      simple.mock(redis, "getString").resolveWith('{"value": 1}');
 
       req = {
         body: {
           companyId: "xxxxx",
-          provider: "twitter"
+          provider: "yyyyy"
         }
       }
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Invalid input");
-      });
     });
 
-    it("return failure when missing companyId", ()=>{
-
-      req = {
-        body: {
-          code: "xxxx",
-          provider: "twitter"
-        }
-      }
-      provider.handleAuthenticatePostRequest(req, res);
+    it("should restore file credentials", () => {
+      provider.handleRestoreFileCredentialsRequest(req, res);
 
       return resPromise.then(body=>{
-        assert.equal(body, "Invalid input");
-      });
-    });
+        assert.deepEqual(body, {success: true});
 
-    it("return failure when missing provider", ()=>{
+        assert.equal(redis.getString.callCount, 1);
+        assert.equal(redis.getString.lastCall.args[0], "xxxxx:yyyyy:10");
 
-      req = {
-        body: {
-          code: "xxxx",
-          companyId: "xxx"
-        }
-      }
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Invalid input");
-      });
-    });
-
-    it("return failure for second step of authentication when cannot autehnticate with OAuth.io", ()=>{
-
-      simple.mock(OAuth, "auth").rejectWith(new Error());
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Could not authenticate with OAuth.io: {companyId: xxxxx, provider: twitter, error: {}}");
-      });
-    });
-
-    it("return failure for second step of authentication when cannot save to DB because of redis increment", ()=>{
-
-      simple.mock(redis, "increment").rejectWith(new Error());
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
-      });
-    });
-
-    it("return failure for second step of authentication when cannot save to DB because of redis setString", ()=>{
-
-      simple.mock(redis, "setString").throwWith(new Error());
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
-      });
-    });
-
-    it("return failure for second step of authentication when cannot save to DB because of redis setAdd", ()=>{
-
-      simple.mock(redis, "setAdd").throwWith(new Error());
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Could not save to DB: {companyId: xxxxx, provider: twitter, error: {}}");
-      });
-    });
-
-    it("return failure for second step of authentication when cannot save to GCS", ()=>{
-      simple.mock(gcs, "saveToGCS").rejectWith(new Error("Could not save to GCS: {}"));
-      provider.handleAuthenticatePostRequest(req, res);
-
-      return resPromise.then(body=>{
-        assert.equal(body, "Could not save to GCS: {}");
-      });
-    });
-
-    describe("Revoke Failures", ()=>{
-
-      beforeEach(()=>{
-        req = {
-          body: {
-            key
-          }
-        }
-      });
-
-      it("return failure for revoke when cannot delete from GCS", ()=>{
-        simple.mock(gcs, "deleteFromGCS").rejectWith(new Error("Could not delete from GCS: {}"));
-        provider.handleRevokeRequest(req, res);
-
-        return resPromise.then(body=>{
-          assert.equal(body, "Could not delete from GCS: {}");
-        });
-      });
-
-      it("return failure for revoke when cannot delete from DB", ()=>{
-        simple.mock(redis, "deleteKey").rejectWith(new Error("Could not delete from DB: {}"));
-        provider.handleRevokeRequest(req, res);
-
-        return resPromise.then(body=>{
-          assert.equal(body, "Could not delete from DB: {}");
+        assert.equal(gcs.saveToGCS.callCount, 1);
+        assert.deepEqual(gcs.saveToGCS.lastCall.args[0], {
+          body: {companyId: "xxxxx", provider: "yyyyy"},
+          credentials: {value: 1}
         });
       });
     });
 
-    describe("Status Failures", ()=>{
+    it("should not restore file credentials if the database has none for that company", () => {
+      simple.mock(redis, "getSet").resolveWith([]);
 
-      beforeEach(()=>{
-        req = {
-          body: {
-            companyId: "xxxxx",
-            provider: "xxxxx"
-          }
-        }
-      });
+      provider.handleRestoreFileCredentialsRequest(req, res);
 
-      it("return failure for status when cannot get from DB", ()=>{
-        simple.mock(redis, "getSet").rejectWith(new Error("Could not delete from GCS: {}"));
-        provider.handleStatusRequest(req, res);
-
-        return resPromise.then(body=>{
-          assert.equal(body, "Could not delete from GCS: {}");
+      return resPromise.then(body=>{
+        assert.deepEqual(body, {
+          success: false,
+          message: "No credentials for: xxxxx:yyyyy"
         });
+
+        assert.equal(redis.getString.callCount, 0);
+        assert.equal(gcs.saveToGCS.callCount, 0);
       });
     });
-
   });
+
 });
