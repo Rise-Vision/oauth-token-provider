@@ -63,7 +63,7 @@ app.use((err, req, res, next) => {
 
 // CORS allow every origin as it requires user authorization
 app.use((req, res, next) => {
-    console.log(`CORS origin: ${req.headers.origin}`);
+    if (req && req.headers && req.headers.origin) {console.log(`CORS origin: ${req.headers.origin}`);}
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
