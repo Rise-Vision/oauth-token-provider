@@ -18,8 +18,8 @@ const redis = require("redis-promise");
 const gkeHostname = "otp-redis-master";
 const redisHost = process.env.NODE_ENV === "test" ? "127.0.0.1" : gkeHostname;
 const provider = require("./provider");
-const google = require("googleapis");
-const oauth2 = google.oauth2("v2");
+const gapis = require("googleapis");
+const oauth2 = gapis.google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
 
 process.on("SIGUSR2", config.debugToggle);
