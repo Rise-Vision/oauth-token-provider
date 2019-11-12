@@ -35,6 +35,7 @@ const checkAccessToken = (req, res, next) => {
     const accessToken = items[1];
     oauth2.tokeninfo({"access_token": accessToken}, (error)=>{
       if (error) {
+        console.error(error);
         return sendUnauthorized(res);
       }
       next();
