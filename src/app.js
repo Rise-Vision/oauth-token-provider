@@ -18,11 +18,9 @@ const redis = require("redis-promise");
 const gkeHostname = "otp-redis-master";
 const redisHost = process.env.NODE_ENV === "test" ? "127.0.0.1" : gkeHostname;
 const provider = require("./provider");
-const google = require("googleapis");
-const oauth2 = google.oauth2("v2");
+const gapis = require("googleapis");
+const oauth2 = gapis.google.oauth2("v2");
 const {AUTH_ERROR} = require("./status-codes.js");
-
-process.on("SIGUSR2", config.debugToggle);
 
 redis.initdb(null, redisHost);
 
@@ -35,6 +33,7 @@ const checkAccessToken = (req, res, next) => {
     const accessToken = items[1];
     oauth2.tokeninfo({"access_token": accessToken}, (error)=>{
       if (error) {
+        console.error(error);
         return sendUnauthorized(res);
       }
       next();
@@ -64,6 +63,7 @@ app.use((err, req, res, next) => {
 
 // CORS allow every origin as it requires user authorization
 app.use((req, res, next) => {
+    console.log(`CORS origin: ${req.headers.origin}`);
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
