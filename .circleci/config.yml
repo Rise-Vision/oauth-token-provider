@@ -23,7 +23,7 @@ jobs:
       - checkout
       - restore_cache:
           key: node-cache-e2e-{{ checksum "package.json" }}
-      - npm install
+      - run: npm install
       - save_cache:
           key: node-cache-e2e-{{ checksum "package.json" }}
           paths:
