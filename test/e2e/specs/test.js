@@ -19,7 +19,7 @@ module.exports = {
           const newWindow = result.value[0];
           this.switchWindow(newWindow);
       })
-      .waitForElementVisible("#oauthio_result", timeout)
+      .waitForElementVisible("#oauthio_result", timeout * 5)
       .waitForElementVisible("#key", timeout)
       .waitForElementVisible("#autentication_result", timeout)
       .waitForElementVisible("#revoke", timeout)
