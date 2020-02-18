@@ -20,6 +20,7 @@ jobs:
     docker: &E2EIMAGE
       - image: jenkinsrise/cci-v2-components:0.0.5
     steps:
+      - run: sudo apt-get update
       - run: sudo apt-get install redis-server -y
       - checkout
       - restore_cache:
