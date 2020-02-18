@@ -7,7 +7,7 @@ module.exports = {
       .url(`http://localhost:3000/twitter-authentication.html?access_token=${accessToken}&env=${e2eEnv}`)
       .waitForElementVisible("#output", timeout)
       .waitForElementVisible("#token", timeout)
-      .window_handles(function(result) {
+      .windowHandles(function(result) {
           const newWindow = result.value[1];
           this.switchWindow(newWindow);
       })
@@ -15,7 +15,7 @@ module.exports = {
       .setValue("input#username_or_email", process.env.USER)
       .setValue("input#password", process.env.PASSWORD)
       .click("input#allow")
-      .window_handles(function(result) {
+      .windowHandles(function(result) {
           const newWindow = result.value[0];
           this.switchWindow(newWindow);
       })
