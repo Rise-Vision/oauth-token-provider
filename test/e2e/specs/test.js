@@ -1,4 +1,5 @@
 const timeout = 5000;
+const extendedTimeout = 25000;
 const accessToken = process.env.ACCESS_TOKEN;
 const e2eEnv = process.env.E2E_ENV
 module.exports = {
@@ -19,7 +20,7 @@ module.exports = {
           const newWindow = result.value[0];
           this.switchWindow(newWindow);
       })
-      .waitForElementVisible("#oauthio_result", timeout * 5)
+      .waitForElementVisible("#oauthio_result", extendedTimeout)
       .waitForElementVisible("#key", timeout)
       .waitForElementVisible("#autentication_result", timeout)
       .waitForElementVisible("#revoke", timeout)
