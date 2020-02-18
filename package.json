@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/unit/** test/integration/**",
+    "selenium": "selenium &",
     "test-e2e": "OTP_PORT=8080 NODE_ENV=test node test/e2e/runner.js",
     "test-unit": "eslint --fix . && mocha -t 20000 -r test/mocha-env.js test/unit/**",
     "test-integration": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/integration/**",
