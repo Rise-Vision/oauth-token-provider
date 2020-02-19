@@ -16,7 +16,7 @@ jobs:
       - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
       - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json npm test
 
-  "e2e":
+  "e2e_local":
     docker: &E2EIMAGE
       - image: jenkinsrise/cci-v2-components:0.0.5
     steps:
@@ -31,7 +31,6 @@ jobs:
           paths:
             - ./node_modules
       - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
-      # e2e tests are broken, and currently disabled
       - run: GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];") npm run test-e2e
 
   "e2e_stage":
@@ -41,8 +40,7 @@ jobs:
       - restore_cache:
           key: node-cache-e2e-{{ checksum "package.json" }}
       - run: "echo ${ACCT_AUTH} | base64 -d > /${HOME}/gcloud-service-key.json"
-      # e2e tests are broken, and currently disabled
-      # - run: E2E_ENV=stage GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];") npm run test-e2e
+      - run: E2E_ENV=stage GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcloud-service-key.json ACCESS_TOKEN=$(curl -s --data ""  "https://www.googleapis.com/oauth2/v3/token?client_id=614513768474.apps.googleusercontent.com&client_secret=${CLIENT_SECRET}&refresh_token=${REFRESH_TOKEN}&grant_type=refresh_token" | python -c "import json,sys;obj=json.load(sys.stdin);print obj['access_token'];") npm run test-e2e
 
   "build_image":
     docker: *DOCKERIMAGE
@@ -107,12 +105,12 @@ workflows:
   workflow1:
     jobs:
       - "test"
-      - "e2e":
+      - "e2e_local":
           requires:
            - test
       - "build_image":
           requires:
-            - e2e
+            - e2e_local
       - "stage":
           requires:
             - build_image
