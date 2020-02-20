@@ -14,15 +14,32 @@ const saveToDB = (auth) => {
   });
 }
 
-const deleteFromDB = (req) => {
-  const keyInParts = req.body.key.split(":");
+const deleteCredentials = (key) => {
+  const keyInParts = key.split(":");
+
   // delete entry and remove to the companyId:provider index
   // eslint-disable-next-line no-magic-numbers
-  return redis.deleteKey(req.body.key).then(redis.setRemove(`${keyInParts[0]}:${keyInParts[1]}`, [keyInParts[2]]));
+  return redis.deleteKey(key).then(redis.setRemove(`${keyInParts[0]}:${keyInParts[1]}`, [keyInParts[2]]));
+}
+
+const deleteFromDB = (req) => {
+  return deleteCredentials(req.body.key);
 }
 
 const checkKey = (req) => {
   return redis.getSet(`${req.body.companyId}:${req.body.provider}`);
+}
+
+const clearCredentials = (req) => {
+  const prefix = `${req.body.companyId}:${req.body.provider}`;
+
+  return checkKey(req).then(keys => {
+    if (!keys || keys.length === 0) {
+      return;
+    }
+
+    return Promise.all(keys.map(key => deleteCredentials(`${prefix}:${key}`)));
+  }).catch(() => Promise.resolve(req));
 }
 
 const getCredentials = key => {
@@ -34,5 +51,6 @@ module.exports = {
   saveToDB,
   deleteFromDB,
   checkKey,
+  clearCredentials,
   getCredentials
 }
