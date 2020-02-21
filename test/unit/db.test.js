@@ -98,7 +98,7 @@ describe("db", ()=>{
     });
   });
 
-  it("doesn't clear if there are not errors retrieving the keys", ()=>{
+  it("doesn't clear if there are errors retrieving the keys", ()=>{
     simple.mock(redis, "getSet").rejectWith(null);
 
     return db.clearCredentials({ body: {
