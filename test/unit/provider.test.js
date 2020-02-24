@@ -140,7 +140,7 @@ describe("Provider", ()=>{
     it("clears credentials before adding new", ()=>{
       provider.handleAuthenticatePostRequest(req, res);
 
-      return resPromise.then(body=>{
+      return resPromise.then(()=>{
         assert.equal(redis.getSet.callCount, 1);
         assert.equal(redis.getSet.lastCall.args[0], "xxxxx:twitter");
 
@@ -158,7 +158,7 @@ describe("Provider", ()=>{
 
       provider.handleAuthenticatePostRequest(req, res);
 
-      return resPromise.then(body=>{
+      return resPromise.then(()=>{
         assert.equal(redis.getSet.callCount, 1);
         assert.equal(redis.getSet.lastCall.args[0], "xxxxx:twitter");
 
