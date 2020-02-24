@@ -72,8 +72,8 @@ const handleAuthenticateGetRequest = (req, res) => {
 
 const handleRevokeRequest = (req, res) => {
   validateRevokeBody(req)
-  .then(gcs.deleteFromGCS)
   .then(db.deleteFromDB)
+  .then(() => gcs.deleteFromGCS(req))
   .then(()=>{res.json({key: req.body.key, revoked: true})})
   .catch(error=>{
     handleError(res, error, "Error when revoking");
