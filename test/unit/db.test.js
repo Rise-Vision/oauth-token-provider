@@ -66,10 +66,6 @@ describe("db", ()=>{
       assert.equal(redis.getSet.lastCall.args[0], "xxxyy:twitter");
 
       assert.equal(redis.deleteKey.callCount, 3);
-      console.log(redis.deleteKey.calls[0].args[0]);
-      console.log(redis.deleteKey.calls[1].args[0]);
-      console.log(redis.deleteKey.calls[2].args[0]);
-      console.log("--------------------------------------");
       assert(isValidFullKey(redis.deleteKey.calls[0].args[0]));
       assert(isValidFullKey(redis.deleteKey.calls[1].args[0]));
       assert(isValidFullKey(redis.deleteKey.calls[2].args[0]));
