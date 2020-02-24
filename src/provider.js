@@ -57,7 +57,10 @@ const handleAuthenticatePostRequest = (req, res) => {
   validateAuthenticateBody(req)
   .then(authenticator.authenticate)
   .then(authenticator.handleAuthentication)
-  .then(db.saveToDB)
+  .then(auth=>{
+    return db.clearCredentials(auth)
+    .then(() => db.saveToDB(auth));
+  })
   .then(gcs.saveToGCS)
   .then((auth)=>{res.json({key: auth.key, authenticated: true})})
   .catch(error=>{
