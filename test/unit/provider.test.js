@@ -125,6 +125,50 @@ describe("Provider", ()=>{
     });
   });
 
+  describe("Clear credentials", () => {
+
+    beforeEach(()=>{
+      req = {
+        body: {
+          code: "xxxxx",
+          companyId: "xxxxx",
+          provider: "twitter"
+        }
+      }
+    });
+
+    it("clears credentials before adding new", ()=>{
+      provider.handleAuthenticatePostRequest(req, res);
+
+      return resPromise.then(body=>{
+        assert.equal(redis.getSet.callCount, 1);
+        assert.equal(redis.getSet.lastCall.args[0], "xxxxx:twitter");
+
+        assert.equal(redis.deleteKey.callCount, 1);
+        assert.equal(redis.deleteKey.lastCall.args[0], "xxxxx:twitter:10");
+
+        assert.equal(redis.setRemove.callCount, 1);
+        assert.equal(redis.setRemove.lastCall.args[0], "xxxxx:twitter");
+        assert.equal(redis.setRemove.lastCall.args[1], "10");
+      });
+    });
+
+    it("does not clear credentials if there are no previous keys", ()=>{
+      simple.mock(redis, "getSet").resolveWith([]);
+
+      provider.handleAuthenticatePostRequest(req, res);
+
+      return resPromise.then(body=>{
+        assert.equal(redis.getSet.callCount, 1);
+        assert.equal(redis.getSet.lastCall.args[0], "xxxxx:twitter");
+
+        assert.equal(redis.deleteKey.callCount, 0);
+        assert.equal(redis.setRemove.callCount, 0);
+      });
+    });
+
+  });
+
   describe("Restore file credentials", () => {
 
     beforeEach(()=>{
