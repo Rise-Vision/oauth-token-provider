@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "test": "eslint --fix . && OTP_PORT=8080 mocha -t 20000 -r test/mocha-env.js test/unit/** test/integration/**",
     "test-e2e": "OTP_PORT=8080 NODE_ENV=test node test/e2e/runner.js",
     "test-unit": "eslint --fix . && mocha -t 20000 -r test/mocha-env.js test/unit/**",
@@ -49,5 +50,8 @@
     "oauthio": "^0.3.5",
     "redis": "^2.8.0",
     "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.2"
+  },
+  "resolutions": {
+    "acorn": "^7.1.1"
   }
 }
