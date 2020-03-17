@@ -52,6 +52,7 @@
     "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.2"
   },
   "resolutions": {
-    "acorn": "^7.1.1"
+    "acorn": "^7.1.1",
+    "minimist": "^1.2.2"
   }
 }
