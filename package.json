@@ -48,7 +48,7 @@
     "express-session": "^1.17.1",
     "googleapis": "^67.1.1",
     "oauthio": "^0.3.5",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "redis-promise": "git+https://github.com/Rise-Vision/redis-promise.git#1.1.2"
   },
   "resolutions": {
